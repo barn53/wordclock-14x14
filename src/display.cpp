@@ -33,11 +33,17 @@ void Display::toPixels(bool* indexes)
         if (indexes[index]) {
             //m_pixels.SetPixelColor(displayIndex, RgbColor(255, 255, 255));
             //m_pixels.SetPixelColor(displayIndex, getRandomColor());
-            m_pixels.SetPixelColor(displayIndex, RgbColor(200, 255, 255));
+            m_pixels.SetPixelColor(displayIndex, RgbColor(200, 200, 200));
         } else {
             m_pixels.SetPixelColor(displayIndex, RgbColor(0, 0, 0));
         }
     }
+    m_pixels.Show();
+}
+
+void Display::clear()
+{
+    m_pixels.ClearTo(RgbColor(2, 0, 2));
     m_pixels.Show();
 }
 

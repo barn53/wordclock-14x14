@@ -225,12 +225,18 @@ void createText(time_t startTime, string& text)
 
     if (hour24 >= 1 && hour24 <= 8) {
         text.append(" AM MORGEN");
-    } else if (hour24 >= 9 && hour24 <= 11) {
+    } else if (hour24 >= 9 && hour24 <= 10) {
+        text.append(" MORGENS");
+    } else if (hour24 >= 11 && hour24 <= 11) {
         text.append(" VOR MITTAGS");
     } else if (hour24 >= 12 && hour24 <= 13) {
         text.append(" MITTAGS");
-    } else if (hour24 >= 18 && hour24 <= 23) {
+    } else if (hour24 >= 14 && hour24 <= 17) {
         text.append(" NACH MITTAGS");
+    } else if (hour24 >= 18 && hour24 <= 20) {
+        text.append(" ABENDS");
+    } else if (hour24 >= 21 && hour24 <= 23) {
+        text.append(" AM ABEND");
     }
 
     char s[10];

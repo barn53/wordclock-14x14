@@ -13,6 +13,7 @@ public:
 
     void begin();
     void toPixels(bool* indexes);
+    void clear();
 
 private:
     void blinkyBlinkyAnimation(const AnimationParam& param);

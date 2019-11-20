@@ -1,4 +1,5 @@
 #include "display.h"
+#include "state.h"
 #include "text.h"
 #include "wifi.h"
 
@@ -36,15 +37,15 @@ void printDisplay(const bool* indexes)
 // https://arduinojson.org/v6/assistant/
 DynamicJsonDocument timeDoc(JSON_OBJECT_SIZE(15) + 350);
 
-time_t startTime;
 bool indexes[PIXELS];
 string text;
 
+State state;
 Display display(WIDTH, HEIGHT);
 
 void printTime()
 {
-    time_t t(startTime + (millis() / 1000));
+    time_t t(state.getStartTime() + (millis() / 1000));
     tm* currentTime(localtime(&t));
     Serial.printf("%u.%u.%u %02u:%02u:%02u\n",
         currentTime->tm_mday, currentTime->tm_mon + 1, currentTime->tm_year + 1900,
@@ -55,19 +56,33 @@ void setup()
 {
     Serial.begin(115200);
     display.begin();
+    pinMode(D6, INPUT);
+    pinMode(D2, OUTPUT);
     setupWiFi();
-    getTime(timeDoc, startTime);
+    getTime(timeDoc, state.getStartTime());
     wifiSleep();
 }
 
 void loop()
 {
-    clear(indexes);
-    createText(startTime, text);
-    indexesForText(text, indexes);
-    //printDisplay(indexes);
-    display.toPixels(indexes);
-    printTime();
+    state.loop();
 
-    delay(1000);
+    if (state.displayOff()) {
+        if (!state.displayCleared()) {
+            display.clear();
+            state.clearDisplay();
+            delay(5000);
+        }
+    } else {
+        clear(indexes);
+        createText(state.getStartTime(), text);
+        indexesForText(text, indexes);
+
+        if (state.refreshText(text)) {
+            //printDisplay(indexes);
+            display.toPixels(indexes);
+            Serial.printf("analog:   %u\n", analogRead(A0));
+            printTime();
+        }
+    }
 }
